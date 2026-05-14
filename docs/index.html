@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BOOK SHIPMENT DASHBOARD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#050500;display:flex;justify-content:center;padding:20px;min-height:100vh;}
+.crt{background:#0a0a00;border-radius:8px;padding:20px;font-family:'Share Tech Mono',monospace;width:100%;max-width:960px;}
+.hdr{border:1px solid #00ff41;padding:8px 12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;}
+.hdr-l{font-size:13px;color:#00ff41;letter-spacing:.1em;}
+.hdr-r{font-size:10px;color:#00aa2a;letter-spacing:.08em;}
+.blink{animation:blink 1s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.kpi{border:1px solid #00aa2a;padding:10px 12px;background:#020a02;}
+.kpi-l{font-size:9px;color:#00aa2a;letter-spacing:.1em;margin-bottom:4px;}
+.kpi-v{font-size:20px;color:#00ff41;}
+.kpi-d{font-size:9px;color:#006614;margin-top:2px;}
+.slabel{font-size:9px;color:#00aa2a;letter-spacing:.12em;margin-bottom:6px;}
+.panel{border:1px solid #00aa2a;padding:12px;background:#020a02;margin-bottom:10px;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.leg{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}
+.leg span{display:flex;align-items:center;gap:4px;font-size:9px;color:#00aa2a;}
+.ld{width:8px;height:8px;flex-shrink:0;}
+.mf{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.mf button{font-size:9px;padding:2px 10px;border:1px solid #00aa2a;background:transparent;color:#00aa2a;cursor:pointer;font-family:'Share Tech Mono',monospace;}
+.mf button.on{background:#00ff4120;color:#00ff41;border-color:#00ff41;}
+.rr{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid #001a00;}
+.rr:last-child{border-bottom:none;}
+.rno{font-size:9px;color:#006614;width:14px;text-align:right;flex-shrink:0;}
+.rtit{font-size:10px;color:#00cc33;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rbw{width:70px;height:5px;background:#001a00;flex-shrink:0;}
+.rb{height:100%;}
+.rv{font-size:9px;color:#006614;width:38px;text-align:right;flex-shrink:0;}
+.tm-wrap{position:relative;width:100%;height:280px;}
+.tm-cell{position:absolute;border:2px solid #0a0a00;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;cursor:default;transition:filter .15s;}
+.tm-cell:hover{filter:brightness(1.4);}
+.tm-label,.tm-val,.tm-pct{font-family:'Share Tech Mono',monospace;text-align:center;line-height:1.3;pointer-events:none;}
+.leg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:5px;margin-top:8px;}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:9px;color:#00aa2a;}
+.leg-sq{width:9px;height:9px;flex-shrink:0;}
+.tooltip{position:absolute;background:#000800;border:1px solid #00ff41;padding:5px 9px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00ff41;pointer-events:none;display:none;z-index:10;white-space:nowrap;}
+.src{font-size:8px;color:#003308;margin-top:6px;}
+.div-line{border-top:1px dashed #003308;margin:10px 0;}
+@media(max-width:600px){.two{grid-template-columns:1fr;}.kpi-row{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="crt">
+  <div class="hdr">
+    <span class="hdr-l">*** BOOK SHIPMENT DASHBOARD v2.0 ***<span class="blink">_</span></span>
+    <span class="hdr-r">UPDATED: 2026.05.14 19:49</span>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-l">TOTAL SHIPPED</div><div class="kpi-v" id="kpiTotal">----</div><div class="kpi-d">ALL CHANNELS</div></div>
+    <div class="kpi"><div class="kpi-l">PEAK DAY</div><div class="kpi-v" id="kpiPeak">----</div><div class="kpi-d" id="kpiPeakDate">--/--</div></div>
+    <div class="kpi"><div class="kpi-l">TOTAL DELIVERY</div><div class="kpi-v" id="kpiMay">----</div><div class="kpi-d">NIPPAN DATA</div></div>
+  </div>
+
+  <div class="slabel">&gt; DAILY SHIPMENT LOG ______________________________</div>
+  <div class="panel">
+    <div class="leg">
+      <span><span class="ld" style="background:#00ff41"></span>SHIPPED</span>
+      <span><span class="ld" style="background:#ff6600;border-radius:50%"></span>MOV.AVG(5D)</span>
+    </div>
+    <div style="position:relative;height:185px;"><canvas id="dailyLine"></canvas></div>
+    <p class="src">SOURCE: daily_omura.xlsx / topシート（全取次合計）</p>
+  </div>
+
+  <div class="two">
+    <div>
+      <div class="slabel">&gt; TOP 10 TITLES ______________</div>
+      <div class="panel"><div id="rankList"></div><p class="src">SOURCE: daily_omura.xlsx</p></div>
+    </div>
+    <div>
+      <div class="slabel">&gt; DISTRIBUTOR SHARE _________</div>
+      <div class="panel">
+        <div class="leg" id="tojiLeg"></div>
+        <div style="position:relative;height:188px;"><canvas id="tojiDonut"></canvas></div>
+        <p class="src">SOURCE: daily_omura.xlsx</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel">&gt; GENRE TREEMAP / SHIPMENT BY CATEGORY ________</div>
+  <div class="panel">
+    <div class="tm-wrap" id="tmWrap"><div class="tooltip" id="tooltip"></div></div>
+    <div class="leg-grid" id="tmLegend"></div>
+    <p class="src">SOURCE: nippan.xlsx / 書誌マスタ x 納返品データ</p>
+  </div>
+
+  <div class="slabel">&gt; MONTHLY SHIPMENT (NIPPAN) ___________________</div>
+  <div class="panel">
+    <div class="mf" id="mf"></div>
+    <div style="position:relative;height:175px;"><canvas id="monthlyBar"></canvas></div>
+    <p class="src">SOURCE: nippan.xlsx / 納返品データ（納品のみ・個数合計）</p>
+  </div>
+
+  <div class="div-line"></div>
+  <div style="font-size:9px;color:#003308;text-align:right;">
+    (C) 2026 PUBLISHING ANALYTICS SYSTEM | AUTO-GENERATED 2026.05.14 19:49<span class="blink">_</span>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const GREEN='#00ff41',GREEN2='#00cc33',DIMGREEN='#006614',ORANGE='#ff6600',BLACK='#020a02';
+const GENRE_COLORS={'実用':'#00bbff','文芸':'#00ff41','人文':'#ff9900','ビジネス':'#aa88ff','芸術':'#ff6699','タレント本':'#ffcc00','理工':'#00ddbb','サブカル':'#ffcc00','社会':'#ff6600','コミック':'#99ff66'};
+const TCOLORS=Object.values(GENRE_COLORS);
+
+const dailyData={"2026-05-14": 148, "2026-05-13": 174, "2026-05-12": 174, "2026-05-11": 257, "2026-05-08": 145, "2026-05-07": 176, "2026-05-01": 143, "2026-04-30": 176, "2026-04-28": 124, "2026-04-27": 119, "2026-04-24": 120, "2026-04-23": 829, "2026-04-22": 155, "2026-04-21": 151, "2026-04-20": 79, "2026-04-17": 243};
+const top10=[["あなたはなぜ、その「人生」を選んだのか", 620], ["死ぬまでひとり暮らし", 477], ["［新書版］人間の本性", 253], ["やるな！「四毒」", 152], ["あの人の心に隠された性格の秘密", 89], ["認知症グレーゾーンは分かれ道", 76], ["心がすっと軽くなる言葉", 72], ["【新書版】生きる意味", 71], ["［新書版］なぜ心は病むのか", 64], ["80歳で体はこう変わるからやっておきたいこ", 63]];
+const tojiRaw={"日販": 1178, "楽天BN": 80, "トーハン": 1953};
+const genreData=[{"genre": "実用", "val": 1265}, {"genre": "文芸", "val": 534}, {"genre": "人文", "val": 431}, {"genre": "ビジネス", "val": 156}, {"genre": "芸術", "val": 147}, {"genre": "理工", "val": 5}, {"genre": "サブカルチャー", "val": 2}, {"genre": "社会", "val": 2}, {"genre": "コミック", "val": 1}];
+const monthlyData={"2026年5月": 2543};
+
+// KPI
+const dVals=Object.values(dailyData);
+const dTotal=dVals.reduce((a,b)=>a+b,0);
+document.getElementById('kpiTotal').textContent=dTotal.toLocaleString();
+if(dVals.length){
+  const peakVal=Math.max(...dVals);
+  const peakKey=Object.keys(dailyData)[dVals.indexOf(peakVal)];
+  const pp=peakKey.split('-');
+  document.getElementById('kpiPeak').textContent=peakVal.toLocaleString();
+  document.getElementById('kpiPeakDate').textContent=pp[1]+'/'+pp[2];
+}
+const mayVal=Object.values(monthlyData).reduce((a,b)=>a+b,0);
+document.getElementById('kpiMay').textContent=mayVal.toLocaleString();
+
+// 日次折れ線
+const dLabels=Object.keys(dailyData).map(d=>{const p=d.split('-');return p[1]+'/'+p[2];});
+function movAvg(arr,n){return arr.map((_,i)=>i<n-1?null:Math.round(arr.slice(i-n+1,i+1).reduce((a,b)=>a+b,0)/n));}
+const ma=movAvg(dVals,Math.min(5,dVals.length));
+new Chart(document.getElementById('dailyLine').getContext('2d'),{
+  type:'line',
+  data:{labels:dLabels,datasets:[
+    {label:'SHIPPED',data:dVals,borderColor:GREEN,backgroundColor:'rgba(0,255,65,0.05)',tension:0,pointRadius:4,pointStyle:'rect',pointBackgroundColor:GREEN,pointBorderColor:BLACK,pointBorderWidth:1,fill:true,order:2,borderWidth:1.5},
+    {label:'MOV.AVG',data:ma,borderColor:ORANGE,borderDash:[3,3],tension:0,pointRadius:0,borderWidth:1.5,fill:false,order:1,spanGaps:true}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'#000800',borderColor:GREEN,borderWidth:0.5,titleColor:DIMGREEN,bodyColor:GREEN2,titleFont:{family:'monospace'},bodyFont:{family:'monospace'},callbacks:{label:ctx=>ctx.dataset.label+': '+(ctx.raw!=null?ctx.raw.toLocaleString()+' COPIES':'---')}}},
+    scales:{x:{ticks:{font:{size:9,family:'monospace'},color:DIMGREEN,maxRotation:45},grid:{color:'#001500'},border:{color:'#003300'}},y:{ticks:{font:{size:9,family:'monospace'},color:DIMGREEN,callback:v=>v.toLocaleString()},grid:{color:'#001500'},border:{color:'#003300'},beginAtZero:true}}
+  }
+});
+
+// TOP10
+if(top10.length){
+  const maxV=top10[0][1];
+  const rl=document.getElementById('rankList');
+  top10.forEach(([t,v],i)=>{
+    const pct=Math.round(v/maxV*100);
+    const col=i===0?GREEN:i<3?GREEN2:DIMGREEN;
+    rl.innerHTML+=`<div class="rr"><span class="rno">${String(i+1).padStart(2,'0')}</span><span class="rtit" title="${t}">${t}</span><div class="rbw"><div class="rb" style="width:${pct}%;background:${col}"></div></div><span class="rv">${v.toLocaleString()}</span></div>`;
+  });
+}
+
+// 取次ドーナツ
+const tojiLabels=Object.keys(tojiRaw);
+const tojiVals=tojiLabels.map(k=>tojiRaw[k]);
+const tojiTotal=tojiVals.reduce((a,b)=>a+b,0);
+const tojiColors=[GREEN,'#00aaff',ORANGE,'#aa88ff'];
+const tl=document.getElementById('tojiLeg');
+tojiLabels.forEach((l,i)=>{
+  const pct=Math.round(tojiVals[i]/tojiTotal*100);
+  tl.innerHTML+=`<span><span class="ld" style="background:${tojiColors[i]}"></span>${l} ${pct}%(${tojiVals[i].toLocaleString()}冊)</span>`;
+});
+if(tojiVals.length){
+  new Chart(document.getElementById('tojiDonut').getContext('2d'),{
+    type:'doughnut',
+    data:{labels:tojiLabels,datasets:[{data:tojiVals,backgroundColor:tojiColors,borderWidth:2,borderColor:'#020a02'}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#000800',borderColor:GREEN,borderWidth:0.5,titleColor:DIMGREEN,bodyColor:GREEN2,titleFont:{family:'monospace'},bodyFont:{family:'monospace'},callbacks:{label:ctx=>ctx.label+': '+ctx.raw.toLocaleString()+'冊 ('+Math.round(ctx.raw/tojiTotal*100)+'%)'}}}
+    }
+  });
+}
+
+// ツリーマップ
+function squarify(items,x,y,w,h){
+  if(!items.length)return[];
+  if(items.length===1)return[{...items[0],x,y,w,h}];
+  const tv=items.reduce((s,d)=>s+d.val,0);
+  let best=Infinity,si=1;
+  for(let i=1;i<items.length;i++){
+    const a=items.slice(0,i).reduce((s,d)=>s+d.val,0);
+    const rw=w>=h?w*a/tv:w,rh=w>=h?h:h*a/tv;
+    const asp=items.slice(0,i).map(d=>{const cw=w>=h?rw:rw*d.val/a,ch=w>=h?rh*d.val/a:rh;return Math.max(cw/ch,ch/cw);});
+    const r=Math.max(...asp);
+    if(r<best){best=r;si=i;}else break;
+  }
+  const row=items.slice(0,si),rest=items.slice(si),rv=row.reduce((s,d)=>s+d.val,0),res=[];
+  if(w>=h){const rw=w*rv/tv;let cy=y;row.forEach(d=>{const ch=h*d.val/rv;res.push({...d,x,y:cy,w:rw,h:ch});cy+=ch;});if(rest.length)res.push(...squarify(rest,x+rw,y,w-rw,h));}
+  else{const rh=h*rv/tv;let cx=x;row.forEach(d=>{const cw=w*d.val/rv;res.push({...d,x:cx,y,w:cw,h:rh});cx+=cw;});if(rest.length)res.push(...squarify(rest,x,y+rh,w,h-rh));}
+  return res;
+}
+function renderTree(){
+  const wrap=document.getElementById('tmWrap');
+  const W=wrap.offsetWidth||900,H=280;
+  const tip=document.getElementById('tooltip');
+  const genreTotal=genreData.reduce((s,d)=>s+d.val,0);
+  if(!genreTotal)return;
+  const sorted=[...genreData].sort((a,b)=>b.val-a.val);
+  squarify(sorted,0,0,W,H).forEach((c,i)=>{
+    const col=TCOLORS[i%TCOLORS.length],pct=Math.round(c.val/genreTotal*100),pad=3;
+    const el=document.createElement('div');
+    el.className='tm-cell';
+    el.style.cssText=`left:${c.x+pad/2}px;top:${c.y+pad/2}px;width:${c.w-pad}px;height:${c.h-pad}px;background:${col}18;border-color:${col};`;
+    const minD=Math.min(c.w,c.h),ls=Math.max(9,Math.min(14,minD/6)),vs=Math.max(8,Math.min(11,minD/7));
+    if(minD>24)el.innerHTML=`<div class="tm-label" style="font-size:${ls}px;color:${col};">${c.genre}</div>`+(minD>42?`<div class="tm-val" style="font-size:${vs}px;color:${col}99;">${c.val}冊</div>`:'')+( minD>56?`<div class="tm-pct" style="font-size:${Math.max(8,vs-1)}px;color:${col}55;">${pct}%</div>`:'');
+    el.addEventListener('mousemove',e=>{tip.style.display='block';const r=wrap.getBoundingClientRect();let tx=e.clientX-r.left+12,ty=e.clientY-r.top+12;if(tx+180>W)tx=e.clientX-r.left-185;tip.style.left=tx+'px';tip.style.top=ty+'px';tip.textContent=`[${c.genre}] ${c.val}冊 / ${pct}%`;});
+    el.addEventListener('mouseleave',()=>{tip.style.display='none';});
+    wrap.appendChild(el);
+  });
+  const lg=document.getElementById('tmLegend');
+  sorted.forEach((d,i)=>{const col=TCOLORS[i%TCOLORS.length],pct=Math.round(d.val/genreTotal*100);lg.innerHTML+=`<div class="leg-item"><div class="leg-sq" style="background:${col}25;border:1px solid ${col};"></div>${d.genre}: ${d.val}冊 (${pct}%)</div>`;});
+}
+window.addEventListener('load',renderTree);
+
+// 月次棒グラフ
+const mLabels=Object.keys(monthlyData),mVals=Object.values(monthlyData);
+let activeIdx=mLabels.map((_,i)=>i);
+const mfDiv=document.getElementById('mf');
+mLabels.forEach((m,i)=>{
+  const btn=document.createElement('button');btn.textContent='['+m+']';btn.className='on';
+  btn.onclick=()=>{if(activeIdx.includes(i)){if(activeIdx.length===1)return;activeIdx=activeIdx.filter(x=>x!==i);btn.className='';}else{activeIdx.push(i);activeIdx.sort((a,b)=>a-b);btn.className='on';}buildBar();};
+  mfDiv.appendChild(btn);
+});
+let barChart;
+function buildBar(){
+  if(barChart)barChart.destroy();
+  barChart=new Chart(document.getElementById('monthlyBar').getContext('2d'),{
+    type:'bar',
+    data:{labels:activeIdx.map(i=>mLabels[i]),datasets:[{label:'COPIES',data:activeIdx.map(i=>mVals[i]),backgroundColor:'rgba(0,255,65,0.12)',borderColor:GREEN,borderWidth:1.5,borderRadius:0,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#000800',borderColor:GREEN,borderWidth:0.5,bodyColor:GREEN2,bodyFont:{family:'monospace'},callbacks:{label:ctx=>ctx.raw.toLocaleString()+' COPIES'}}},scales:{x:{ticks:{font:{size:10,family:'monospace'},color:DIMGREEN},grid:{display:false},border:{color:'#003300'}},y:{ticks:{font:{size:9,family:'monospace'},color:DIMGREEN,callback:v=>v.toLocaleString()},grid:{color:'#001500'},border:{color:'#003300'},beginAtZero:true}}}
+  });
+}
+buildBar();
+</script>
+</body>
+</html>
