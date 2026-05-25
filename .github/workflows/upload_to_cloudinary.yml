@@ -1,0 +1,41 @@
+name: Upload new ph images to Cloudinary
+
+on:
+  push:
+    paths:
+      - 'ph/**'
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install cloudinary
+        run: pip install cloudinary
+
+      - name: Upload new images
+        env:
+          CLOUD_NAME: dhuvuhjcu
+          API_KEY: 782922638764775
+          API_SECRET: 1NQMxCLd3cQ483F5mxSABGoa8fk
+        run: |
+          python - <<'EOF'
+          import os, cloudinary, cloudinary.uploader, cloudinary.api
+          from pathlib import Path
+          cloudinary.config(cloud_name=os.environ['CLOUD_NAME'], api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'], secure=True)
+          for jpg in Path('ph').glob('*.jpg'):
+              isbn = jpg.stem
+              public_id = f"ph/{isbn}"
+              try:
+                  cloudinary.api.resource(public_id)
+                  print(f"SKIP: {isbn}")
+              except:
+                  cloudinary.uploader.upload(str(jpg), public_id=public_id, overwrite=False)
+                  print(f"OK: {isbn}")
+          EOF
