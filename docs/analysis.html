@@ -1,245 +1,112 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>BOOK SHIPMENT DASHBOARD</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:#050500;display:flex;justify-content:center;padding:20px;min-height:100vh;}
-.crt{background:#0a0a00;border-radius:8px;padding:20px;font-family:'Share Tech Mono',monospace;width:100%;max-width:960px;}
-.hdr{border:1px solid #00ff41;padding:8px 12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;}
-.hdr-l{font-size:13px;color:#00ff41;letter-spacing:.1em;}
-.hdr-r{font-size:10px;color:#00aa2a;letter-spacing:.08em;}
-.blink{animation:blink 1s step-end infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-.kpi{border:1px solid #00aa2a;padding:10px 12px;background:#020a02;}
-.kpi-l{font-size:9px;color:#00aa2a;letter-spacing:.1em;margin-bottom:4px;}
-.kpi-v{font-size:20px;color:#00ff41;}
-.kpi-d{font-size:9px;color:#006614;margin-top:2px;}
-.slabel{font-size:9px;color:#00aa2a;letter-spacing:.12em;margin-bottom:6px;}
-.panel{border:1px solid #00aa2a;padding:12px;background:#020a02;margin-bottom:10px;}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
-.leg{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}
-.leg span{display:flex;align-items:center;gap:4px;font-size:9px;color:#00aa2a;}
-.ld{width:8px;height:8px;flex-shrink:0;}
-.mf{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
-.mf button{font-size:9px;padding:2px 10px;border:1px solid #00aa2a;background:transparent;color:#00aa2a;cursor:pointer;font-family:'Share Tech Mono',monospace;}
-.mf button.on{background:#00ff4120;color:#00ff41;border-color:#00ff41;}
-.rr{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid #001a00;}
-.rr:last-child{border-bottom:none;}
-.rno{font-size:9px;color:#006614;width:14px;text-align:right;flex-shrink:0;}
-.rtit{font-size:10px;color:#00cc33;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.rbw{width:70px;height:5px;background:#001a00;flex-shrink:0;}
-.rb{height:100%;}
-.rv{font-size:9px;color:#006614;width:38px;text-align:right;flex-shrink:0;}
-.tm-wrap{position:relative;width:100%;height:280px;}
-.tm-cell{position:absolute;border:2px solid #0a0a00;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;cursor:default;transition:filter .15s;}
-.tm-cell:hover{filter:brightness(1.4);}
-.tm-label,.tm-val,.tm-pct{font-family:'Share Tech Mono',monospace;text-align:center;line-height:1.3;pointer-events:none;}
-.leg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:5px;margin-top:8px;}
-.leg-item{display:flex;align-items:center;gap:5px;font-size:9px;color:#00aa2a;}
-.leg-sq{width:9px;height:9px;flex-shrink:0;}
-.tooltip{position:absolute;background:#000800;border:1px solid #00ff41;padding:5px 9px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00ff41;pointer-events:none;display:none;z-index:10;white-space:nowrap;}
-.src{font-size:8px;color:#003308;margin-top:6px;}
-.div-line{border-top:1px dashed #003308;margin:10px 0;}
-@media(max-width:600px){.two{grid-template-columns:1fr;}.kpi-row{grid-template-columns:1fr 1fr;}}
-</style>
-</head>
-<body>
-<div class="crt">
-  <div class="hdr">
-    <span class="hdr-l">*** BOOK SHIPMENT DASHBOARD v2.0 ***<span class="blink">_</span></span>
-    <span class="hdr-r">UPDATED: 2026.05.26 12:40</span>
-  </div>
+<html lang="ja"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SHIPMENT ANALYSIS SYSTEM v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;margin:0;padding:0;}
+:root{--g:#00ff41;--g2:#00cc33;--dg:#006614;--dk:#003308;--or:#ff6600;--am:#ffaa00;--rd:#ff3333;--cy:#00ccff;--bg:#020a02;--pn:#040e04;--bd:#00aa2a;}
+body{background:var(--bg);min-height:100vh;padding:16px;font-family:'Share Tech Mono',monospace;background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.015) 2px,rgba(0,255,65,0.015) 4px);}
+.crt{max-width:1100px;margin:0 auto;}
+.sys-header{border:2px solid var(--g);padding:10px 16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#020a02,#041204);}
+.sys-title{font-family:'VT323',monospace;font-size:26px;color:var(--g);letter-spacing:.15em;}
+.sys-meta{font-size:10px;color:var(--dg);text-align:right;line-height:1.6;}
+.blink{animation:blink 1s step-end infinite;}@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.kpi{border:1px solid var(--bd);padding:10px 14px;background:var(--pn);}
+.kpi-label{font-size:9px;color:var(--dg);letter-spacing:.12em;margin-bottom:4px;}
+.kpi-val{font-family:'VT323',monospace;font-size:28px;color:var(--g);line-height:1;}
+.kpi-sub{font-size:9px;color:var(--dg);margin-top:2px;}
+.kpi-up{color:var(--g);}.kpi-warn{color:var(--am);}.kpi-danger{color:var(--rd);}
+.slabel{font-size:9px;color:var(--g2);letter-spacing:.15em;margin-bottom:6px;border-left:2px solid var(--g);padding-left:8px;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.panel{border:1px solid var(--bd);padding:12px;background:var(--pn);margin-bottom:10px;}
+.bar-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
+.bar-label{font-size:9px;color:var(--g2);width:165px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bar-wrap{flex:1;height:14px;background:#001500;}.bar-fill{height:100%;}
+.bar-val{font-size:9px;color:var(--dg);width:38px;text-align:right;flex-shrink:0;}
+.vtable{width:100%;border-collapse:collapse;}
+.vtable th{font-size:8px;color:var(--dg);padding:3px 4px;border-bottom:1px solid var(--dk);text-align:left;}
+.vtable td{font-size:9px;color:var(--g2);padding:3px 4px;border-bottom:1px solid #001200;}
+.badge{display:inline-block;padding:1px 5px;font-size:8px;}
+.hot{background:#1a0000;color:var(--rd);border:1px solid #660000;}
+.rising{background:#1a1000;color:var(--am);border:1px solid #664400;}
+.stable{background:#001a00;color:var(--g);border:1px solid #004400;}
+.slow{background:#0a0a14;color:#4466aa;border:1px solid #223355;}
+.sparkline-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #001200;}
+.sp-label{font-size:9px;color:var(--g2);width:155px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sp-wrap{flex:1;height:22px;}.sp-val{font-size:9px;width:35px;text-align:right;flex-shrink:0;}
+.dist-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.dist-name{font-size:10px;color:var(--g2);width:68px;flex-shrink:0;}
+.dist-bar-wrap{flex:1;height:16px;background:#001500;}
+.dist-bar{height:100%;display:flex;align-items:center;padding-left:4px;}
+.dist-val{font-size:9px;color:var(--dg);width:58px;text-align:right;flex-shrink:0;}
+.divider{border-top:1px dashed var(--dk);margin:8px 0;}
+.nav-link{display:inline-block;font-size:9px;color:var(--dg);border:1px solid var(--dk);padding:2px 10px;text-decoration:none;margin-right:6px;}
+.nav-link:hover{color:var(--g);border-color:var(--g);}
+@media(max-width:700px){.two{grid-template-columns:1fr;}.kpi-row{grid-template-columns:1fr 1fr;}}</style></head>
+<body><div class="crt">
+<div class="sys-header">
+  <div><div class="sys-title">&#9619;&#9618;&#9617; SHIPMENT ANALYSIS SYSTEM &#9617;&#9618;&#9619;<span class="blink">_</span></div>
+  <div style="font-size:9px;color:var(--dg);margin-top:2px;">OUTBOUND TREND / VELOCITY / DEPLETION FORECAST</div></div>
+  <div class="sys-meta">VER 1.0 / AUTO-GENERATED<br>2026.05.26 18:34<br><a href="index.html" class="nav-link">&#9654; MAIN DASHBOARD</a></div>
+</div>
+<div class="kpi-row">
+  <div class="kpi"><div class="kpi-label">TOTAL SHIPPED [ALL]</div><div class="kpi-val">4,653</div><div class="kpi-sub">ALL CHANNELS</div></div>
+  <div class="kpi"><div class="kpi-label">LATEST SHIPMENT</div><div class="kpi-val kpi-up">198</div><div class="kpi-sub kpi-up">▲ 70 vs PREV DAY</div></div>
+  <div class="kpi"><div class="kpi-label">NIPPAN TOTAL</div><div class="kpi-val">1,699</div><div class="kpi-sub">DELIVERY ONLY</div></div>
+  <div class="kpi"><div class="kpi-label">HOT TITLES</div><div class="kpi-val kpi-warn">3</div><div class="kpi-sub kpi-warn">&#9650; VELOCITY &gt;20/DAY</div></div>
+</div>
+<div class="two">
+  <div>
+    <div class="slabel">&gt; DISTRIBUTOR SHARE ___________</div>
+    <div class="panel"><div class="dist-row"><div class="dist-name">トーハン</div><div class="dist-bar-wrap"><div class="dist-bar" style="width:59%;background:#ff660020;border-right:2px solid #ff6600;"><span style="font-size:9px;color:#ff6600">59%</span></div></div><div class="dist-val">2,760冊</div></div>
+<div class="dist-row"><div class="dist-name">日　販</div><div class="dist-bar-wrap"><div class="dist-bar" style="width:37%;background:#00ff4120;border-right:2px solid #00ff41;"><span style="font-size:9px;color:#00ff41">37%</span></div></div><div class="dist-val">1,699冊</div></div>
+<div class="dist-row"><div class="dist-name">楽天BN</div><div class="dist-bar-wrap"><div class="dist-bar" style="width:4%;background:#00ccff20;border-right:2px solid #00ccff;"><span style="font-size:9px;color:#00ccff">4%</span></div></div><div class="dist-val">192冊</div></div>
 
-  <div class="kpi-row">
-    <div class="kpi"><div class="kpi-l">TOTAL SHIPPED</div><div class="kpi-v" id="kpiTotal">----</div><div class="kpi-d">ALL CHANNELS</div></div>
-    <div class="kpi"><div class="kpi-l">PEAK DAY</div><div class="kpi-v" id="kpiPeak">----</div><div class="kpi-d" id="kpiPeakDate">--/--</div></div>
-    <div class="kpi"><div class="kpi-l">TOTAL DELIVERY</div><div class="kpi-v" id="kpiMay">----</div><div class="kpi-d">NIPPAN DATA</div></div>
-  </div>
-
-  <div class="slabel">&gt; DAILY SHIPMENT LOG ______________________________</div>
-  <div class="panel">
-    <div class="leg">
-      <span><span class="ld" style="background:#00ff41"></span>SHIPPED</span>
-      <span><span class="ld" style="background:#ff6600;border-radius:50%"></span>MOV.AVG(5D)</span>
-    </div>
-    <div style="position:relative;height:185px;"><canvas id="dailyLine"></canvas></div>
-    <p class="src">SOURCE: daily_omura.xlsx / topシート（全取次合計）</p>
-  </div>
-
-  <div class="two">
-    <div>
-      <div class="slabel">&gt; TOP 10 TITLES ______________</div>
-      <div class="panel"><div id="rankList"></div><p class="src">SOURCE: daily_omura.xlsx</p></div>
-    </div>
-    <div>
-      <div class="slabel">&gt; DISTRIBUTOR SHARE _________</div>
-      <div class="panel">
-        <div class="leg" id="tojiLeg"></div>
-        <div style="position:relative;height:188px;"><canvas id="tojiDonut"></canvas></div>
-        <p class="src">SOURCE: daily_omura.xlsx</p>
-      </div>
+      <div class="divider"></div>
+      <div class="slabel" style="margin-top:4px;">&gt; DAILY TREND</div>
+      <div style="position:relative;height:125px;"><canvas id="distLine"></canvas></div>
     </div>
   </div>
-
-  <div class="slabel">&gt; GENRE TREEMAP / SHIPMENT BY CATEGORY ________</div>
-  <div class="panel">
-    <div class="tm-wrap" id="tmWrap"><div class="tooltip" id="tooltip"></div></div>
-    <div class="leg-grid" id="tmLegend"></div>
-    <p class="src">SOURCE: nippan.xlsx / 書誌マスタ x 納返品データ</p>
-  </div>
-
-  <div class="slabel">&gt; MONTHLY SHIPMENT (NIPPAN) ___________________</div>
-  <div class="panel">
-    <div class="mf" id="mf"></div>
-    <div style="position:relative;height:175px;"><canvas id="monthlyBar"></canvas></div>
-    <p class="src">SOURCE: nippan.xlsx / 納返品データ（納品のみ・個数合計）</p>
-  </div>
-
-  <div class="div-line"></div>
-  <div style="font-size:9px;color:#003308;text-align:right;">
-    (C) 2026 PUBLISHING ANALYTICS SYSTEM | AUTO-GENERATED 2026.05.26 12:40<span class="blink">_</span>
+  <div>
+    <div class="slabel">&gt; TITLE VELOCITY [RECENT 5D AVG] ____</div>
+    <div class="panel"><table class="vtable"><thead><tr><th>TITLE</th><th>AVG/D</th><th>TOTAL</th><th>STATUS</th></tr></thead><tbody id="velBody"></tbody></table></div>
   </div>
 </div>
-
+<div class="two">
+  <div>
+    <div class="slabel">&gt; TREND SPARKLINES ______</div>
+    <div class="panel"><div id="sparklines"></div></div>
+  </div>
+  <div>
+    <div class="slabel">&gt; TOP 10 OUTBOUND [ALL CHANNELS] _____</div>
+    <div class="panel"><div class="bar-row"><div class="bar-label">01 あなたはなぜ、その「人生」を選んだのか</div><div class="bar-wrap"><div class="bar-fill" style="width:100%;background:#00ff4120;border-right:2px solid #00ff41;"></div></div><div class="bar-val" style="color:#00ff41">658</div></div>
+<div class="bar-row"><div class="bar-label">02 死ぬまでひとり暮らし</div><div class="bar-wrap"><div class="bar-fill" style="width:98%;background:#00cc3320;border-right:2px solid #00cc33;"></div></div><div class="bar-val" style="color:#00cc33">646</div></div>
+<div class="bar-row"><div class="bar-label">03 ［新書版］人間の本性</div><div class="bar-wrap"><div class="bar-fill" style="width:46%;background:#00cc3320;border-right:2px solid #00cc33;"></div></div><div class="bar-val" style="color:#00cc33">301</div></div>
+<div class="bar-row"><div class="bar-label">04 やるな！「四毒」</div><div class="bar-wrap"><div class="bar-fill" style="width:40%;background:#00661420;border-right:2px solid #006614;"></div></div><div class="bar-val" style="color:#006614">263</div></div>
+<div class="bar-row"><div class="bar-label">05 医者の言うことを聞いてはいけない</div><div class="bar-wrap"><div class="bar-fill" style="width:34%;background:#00661420;border-right:2px solid #006614;"></div></div><div class="bar-val" style="color:#006614">226</div></div>
+<div class="bar-row"><div class="bar-label">06 人の名前が出てこなくなったら鎌田實の逆さ</div><div class="bar-wrap"><div class="bar-fill" style="width:33%;background:#00661420;border-right:2px solid #006614;"></div></div><div class="bar-val" style="color:#006614">215</div></div>
+<div class="bar-row"><div class="bar-label">07 80歳で体はこう変わるからやっておきたいこ</div><div class="bar-wrap"><div class="bar-fill" style="width:20%;background:#00661420;border-right:2px solid #006614;"></div></div><div class="bar-val" style="color:#006614">131</div></div>
+<div class="bar-row"><div class="bar-label">08 あの人の心に隠された性格の秘密</div><div class="bar-wrap"><div class="bar-fill" style="width:18%;background:#00661420;border-right:2px solid #006614;"></div></div><div class="bar-val" style="color:#006614">116</div></div>
+<div class="bar-row"><div class="bar-label">09 【新書版】論語と算盤</div><div class="bar-wrap"><div class="bar-fill" style="width:16%;background:#00661420;border-right:2px solid #006614;"></div></div><div class="bar-val" style="color:#006614">106</div></div>
+<div class="bar-row"><div class="bar-label">10 心がすっと軽くなる言葉</div><div class="bar-wrap"><div class="bar-fill" style="width:14%;background:#00661420;border-right:2px solid #006614;"></div></div><div class="bar-val" style="color:#006614">94</div></div>
+</div>
+  </div>
+</div>
+<div class="divider"></div>
+<div style="font-size:9px;color:var(--dk);text-align:right;">AUTO-GENERATED 2026.05.26 18:34<span class="blink">_</span></div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const GREEN='#00ff41',GREEN2='#00cc33',DIMGREEN='#006614',ORANGE='#ff6600',BLACK='#020a02';
-const GENRE_COLORS={'実用':'#00bbff','文芸':'#00ff41','人文':'#ff9900','ビジネス':'#aa88ff','芸術':'#ff6699','タレント本':'#ffcc00','理工':'#00ddbb','サブカル':'#ffcc00','社会':'#ff6600','コミック':'#99ff66'};
-const TCOLORS=Object.values(GENRE_COLORS);
-
-const dailyData={"2026-04-17": 243, "2026-04-20": 79, "2026-04-21": 151, "2026-04-22": 155, "2026-04-23": 829, "2026-04-24": 120, "2026-04-27": 119, "2026-04-28": 124, "2026-04-30": 176, "2026-05-01": 143, "2026-05-07": 176, "2026-05-08": 145, "2026-05-11": 257, "2026-05-12": 174, "2026-05-13": 174, "2026-05-14": 148, "2026-05-15": 95, "2026-05-18": 121, "2026-05-19": 203, "2026-05-20": 384, "2026-05-21": 104, "2026-05-22": 207, "2026-05-25": 128, "2026-05-26": 198};
-const top10=[["あなたはなぜ、その「人生」を選んだのか", 658], ["死ぬまでひとり暮らし", 646], ["［新書版］人間の本性", 301], ["やるな！「四毒」", 263], ["医者の言うことを聞いてはいけない", 226], ["人の名前が出てこなくなったら鎌田實の逆さ", 215], ["80歳で体はこう変わるからやっておきたいこ", 131], ["あの人の心に隠された性格の秘密", 116], ["【新書版】論語と算盤", 106], ["心がすっと軽くなる言葉", 94]];
-const tojiRaw={"日販": 1699, "楽天BN": 192, "トーハン": 2760};
-const genreData=[{"genre": "実用", "val": 4224}, {"genre": "文芸", "val": 1212}, {"genre": "人文", "val": 1148}, {"genre": "ビジネス", "val": 403}, {"genre": "芸術", "val": 331}, {"genre": "タレント本", "val": 22}, {"genre": "サブカルチャー", "val": 9}, {"genre": "理工", "val": 8}, {"genre": "社会", "val": 4}, {"genre": "コミック", "val": 1}];
-const monthlyData={"2026年5月": 7362};
-
-// KPI
-const dVals=Object.values(dailyData);
-const dTotal=dVals.reduce((a,b)=>a+b,0);
-document.getElementById('kpiTotal').textContent=dTotal.toLocaleString();
-if(dVals.length){
-  const peakVal=Math.max(...dVals);
-  const peakKey=Object.keys(dailyData)[dVals.indexOf(peakVal)];
-  const pp=peakKey.split('-');
-  document.getElementById('kpiPeak').textContent=peakVal.toLocaleString();
-  document.getElementById('kpiPeakDate').textContent=pp[1]+'/'+pp[2];
-}
-const mayVal=Object.values(monthlyData).reduce((a,b)=>a+b,0);
-document.getElementById('kpiMay').textContent=mayVal.toLocaleString();
-
-// 日次折れ線
-const dLabels=Object.keys(dailyData).map(d=>{const p=d.split('-');return p[1]+'/'+p[2];});
-function movAvg(arr,n){return arr.map((_,i)=>i<n-1?null:Math.round(arr.slice(i-n+1,i+1).reduce((a,b)=>a+b,0)/n));}
-const ma=movAvg(dVals,Math.min(5,dVals.length));
-new Chart(document.getElementById('dailyLine').getContext('2d'),{
-  type:'line',
-  data:{labels:dLabels,datasets:[
-    {label:'SHIPPED',data:dVals,borderColor:GREEN,backgroundColor:'rgba(0,255,65,0.05)',tension:0,pointRadius:4,pointStyle:'rect',pointBackgroundColor:GREEN,pointBorderColor:BLACK,pointBorderWidth:1,fill:true,order:2,borderWidth:1.5},
-    {label:'MOV.AVG',data:ma,borderColor:ORANGE,borderDash:[3,3],tension:0,pointRadius:0,borderWidth:1.5,fill:false,order:1,spanGaps:true}
-  ]},
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'#000800',borderColor:GREEN,borderWidth:0.5,titleColor:DIMGREEN,bodyColor:GREEN2,titleFont:{family:'monospace'},bodyFont:{family:'monospace'},callbacks:{label:ctx=>ctx.dataset.label+': '+(ctx.raw!=null?ctx.raw.toLocaleString()+' COPIES':'---')}}},
-    scales:{x:{ticks:{font:{size:9,family:'monospace'},color:DIMGREEN,maxRotation:45},grid:{color:'#001500'},border:{color:'#003300'}},y:{ticks:{font:{size:9,family:'monospace'},color:DIMGREEN,callback:v=>v.toLocaleString()},grid:{color:'#001500'},border:{color:'#003300'},beginAtZero:true}}
-  }
-});
-
-// TOP10
-if(top10.length){
-  const maxV=top10[0][1];
-  const rl=document.getElementById('rankList');
-  top10.forEach(([t,v],i)=>{
-    const pct=Math.round(v/maxV*100);
-    const col=i===0?GREEN:i<3?GREEN2:DIMGREEN;
-    rl.innerHTML+=`<div class="rr"><span class="rno">${String(i+1).padStart(2,'0')}</span><span class="rtit" title="${t}">${t}</span><div class="rbw"><div class="rb" style="width:${pct}%;background:${col}"></div></div><span class="rv">${v.toLocaleString()}</span></div>`;
-  });
-}
-
-// 取次ドーナツ
-const tojiLabels=Object.keys(tojiRaw);
-const tojiVals=tojiLabels.map(k=>tojiRaw[k]);
-const tojiTotal=tojiVals.reduce((a,b)=>a+b,0);
-const tojiColors=[GREEN,'#00aaff',ORANGE,'#aa88ff'];
-const tl=document.getElementById('tojiLeg');
-tojiLabels.forEach((l,i)=>{
-  const pct=Math.round(tojiVals[i]/tojiTotal*100);
-  tl.innerHTML+=`<span><span class="ld" style="background:${tojiColors[i]}"></span>${l} ${pct}%(${tojiVals[i].toLocaleString()}冊)</span>`;
-});
-if(tojiVals.length){
-  new Chart(document.getElementById('tojiDonut').getContext('2d'),{
-    type:'doughnut',
-    data:{labels:tojiLabels,datasets:[{data:tojiVals,backgroundColor:tojiColors,borderWidth:2,borderColor:'#020a02'}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
-      plugins:{legend:{display:false},tooltip:{backgroundColor:'#000800',borderColor:GREEN,borderWidth:0.5,titleColor:DIMGREEN,bodyColor:GREEN2,titleFont:{family:'monospace'},bodyFont:{family:'monospace'},callbacks:{label:ctx=>ctx.label+': '+ctx.raw.toLocaleString()+'冊 ('+Math.round(ctx.raw/tojiTotal*100)+'%)'}}}
-    }
-  });
-}
-
-// ツリーマップ
-function squarify(items,x,y,w,h){
-  if(!items.length)return[];
-  if(items.length===1)return[{...items[0],x,y,w,h}];
-  const tv=items.reduce((s,d)=>s+d.val,0);
-  let best=Infinity,si=1;
-  for(let i=1;i<items.length;i++){
-    const a=items.slice(0,i).reduce((s,d)=>s+d.val,0);
-    const rw=w>=h?w*a/tv:w,rh=w>=h?h:h*a/tv;
-    const asp=items.slice(0,i).map(d=>{const cw=w>=h?rw:rw*d.val/a,ch=w>=h?rh*d.val/a:rh;return Math.max(cw/ch,ch/cw);});
-    const r=Math.max(...asp);
-    if(r<best){best=r;si=i;}else break;
-  }
-  const row=items.slice(0,si),rest=items.slice(si),rv=row.reduce((s,d)=>s+d.val,0),res=[];
-  if(w>=h){const rw=w*rv/tv;let cy=y;row.forEach(d=>{const ch=h*d.val/rv;res.push({...d,x,y:cy,w:rw,h:ch});cy+=ch;});if(rest.length)res.push(...squarify(rest,x+rw,y,w-rw,h));}
-  else{const rh=h*rv/tv;let cx=x;row.forEach(d=>{const cw=w*d.val/rv;res.push({...d,x:cx,y,w:cw,h:rh});cx+=cw;});if(rest.length)res.push(...squarify(rest,x,y+rh,w,h-rh));}
-  return res;
-}
-function renderTree(){
-  const wrap=document.getElementById('tmWrap');
-  const W=wrap.offsetWidth||900,H=280;
-  const tip=document.getElementById('tooltip');
-  const genreTotal=genreData.reduce((s,d)=>s+d.val,0);
-  if(!genreTotal)return;
-  const sorted=[...genreData].sort((a,b)=>b.val-a.val);
-  squarify(sorted,0,0,W,H).forEach((c,i)=>{
-    const col=TCOLORS[i%TCOLORS.length],pct=Math.round(c.val/genreTotal*100),pad=3;
-    const el=document.createElement('div');
-    el.className='tm-cell';
-    el.style.cssText=`left:${c.x+pad/2}px;top:${c.y+pad/2}px;width:${c.w-pad}px;height:${c.h-pad}px;background:${col}18;border-color:${col};`;
-    const minD=Math.min(c.w,c.h),ls=Math.max(9,Math.min(14,minD/6)),vs=Math.max(8,Math.min(11,minD/7));
-    if(minD>24)el.innerHTML=`<div class="tm-label" style="font-size:${ls}px;color:${col};">${c.genre}</div>`+(minD>42?`<div class="tm-val" style="font-size:${vs}px;color:${col}99;">${c.val}冊</div>`:'')+( minD>56?`<div class="tm-pct" style="font-size:${Math.max(8,vs-1)}px;color:${col}55;">${pct}%</div>`:'');
-    el.addEventListener('mousemove',e=>{tip.style.display='block';const r=wrap.getBoundingClientRect();let tx=e.clientX-r.left+12,ty=e.clientY-r.top+12;if(tx+180>W)tx=e.clientX-r.left-185;tip.style.left=tx+'px';tip.style.top=ty+'px';tip.textContent=`[${c.genre}] ${c.val}冊 / ${pct}%`;});
-    el.addEventListener('mouseleave',()=>{tip.style.display='none';});
-    wrap.appendChild(el);
-  });
-  const lg=document.getElementById('tmLegend');
-  sorted.forEach((d,i)=>{const col=TCOLORS[i%TCOLORS.length],pct=Math.round(d.val/genreTotal*100);lg.innerHTML+=`<div class="leg-item"><div class="leg-sq" style="background:${col}25;border:1px solid ${col};"></div>${d.genre}: ${d.val}冊 (${pct}%)</div>`;});
-}
-window.addEventListener('load',renderTree);
-
-// 月次棒グラフ
-const mLabels=Object.keys(monthlyData),mVals=Object.values(monthlyData);
-let activeIdx=mLabels.map((_,i)=>i);
-const mfDiv=document.getElementById('mf');
-mLabels.forEach((m,i)=>{
-  const btn=document.createElement('button');btn.textContent='['+m+']';btn.className='on';
-  btn.onclick=()=>{if(activeIdx.includes(i)){if(activeIdx.length===1)return;activeIdx=activeIdx.filter(x=>x!==i);btn.className='';}else{activeIdx.push(i);activeIdx.sort((a,b)=>a-b);btn.className='on';}buildBar();};
-  mfDiv.appendChild(btn);
-});
-let barChart;
-function buildBar(){
-  if(barChart)barChart.destroy();
-  barChart=new Chart(document.getElementById('monthlyBar').getContext('2d'),{
-    type:'bar',
-    data:{labels:activeIdx.map(i=>mLabels[i]),datasets:[{label:'COPIES',data:activeIdx.map(i=>mVals[i]),backgroundColor:'rgba(0,255,65,0.12)',borderColor:GREEN,borderWidth:1.5,borderRadius:0,borderSkipped:false}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#000800',borderColor:GREEN,borderWidth:0.5,bodyColor:GREEN2,bodyFont:{family:'monospace'},callbacks:{label:ctx=>ctx.raw.toLocaleString()+' COPIES'}}},scales:{x:{ticks:{font:{size:10,family:'monospace'},color:DIMGREEN},grid:{display:false},border:{color:'#003300'}},y:{ticks:{font:{size:9,family:'monospace'},color:DIMGREEN,callback:v=>v.toLocaleString()},grid:{color:'#001500'},border:{color:'#003300'},beginAtZero:true}}}
-  });
-}
-buildBar();
-</script>
-</body>
-</html>
+const G='#00ff41',G2='#00cc33',DG='#006614',OR='#ff6600',AM='#ffaa00',RD='#ff3333';
+const dateLabels=["04/17", "04/20", "04/21", "04/22", "04/23", "04/24", "04/27", "04/28", "04/30", "05/01", "05/07", "05/08", "05/11", "05/12", "05/13", "05/14", "05/15", "05/18", "05/19", "05/20", "05/21", "05/22", "05/25", "05/26"];
+const dailyVals=[243, 79, 151, 155, 829, 120, 119, 124, 176, 143, 176, 145, 257, 174, 174, 148, 95, 121, 203, 384, 104, 207, 128, 198];
+const velData=[{"t": "あなたはなぜ、その「人生」を選んだのか", "avg": 48.8, "total": 658, "badge": "hot"}, {"t": "死ぬまでひとり暮らし", "avg": 47.9, "total": 646, "badge": "hot"}, {"t": "［新書版］人間の本性", "avg": 22.3, "total": 301, "badge": "hot"}, {"t": "やるな！「四毒」", "avg": 19.5, "total": 263, "badge": "rising"}, {"t": "医者の言うことを聞いてはいけない", "avg": 16.7, "total": 226, "badge": "rising"}, {"t": "人の名前が出てこなくなったら鎌田實の逆さ", "avg": 15.9, "total": 215, "badge": "rising"}, {"t": "80歳で体はこう変わるからやっておきたいこ", "avg": 9.7, "total": 131, "badge": "stable"}, {"t": "あの人の心に隠された性格の秘密", "avg": 8.6, "total": 116, "badge": "stable"}, {"t": "【新書版】論語と算盤", "avg": 7.9, "total": 106, "badge": "stable"}, {"t": "心がすっと軽くなる言葉", "avg": 7.0, "total": 94, "badge": "stable"}];
+const sparkData=[{"t": "あなたはなぜ、その「人生」を選んだのか", "avg": 48.8, "d": [58, 19, 36, 37, 198, 29, 28, 30, 42, 34, 42, 35, 61, 42, 42, 35, 23, 29, 48, 92, 25, 49, 31, 47]}, {"t": "死ぬまでひとり暮らし", "avg": 47.8, "d": [57, 19, 35, 36, 194, 28, 28, 29, 41, 34, 41, 34, 60, 41, 41, 35, 22, 28, 48, 90, 24, 49, 30, 46]}, {"t": "［新書版］人間の本性", "avg": 22.4, "d": [27, 9, 16, 17, 91, 13, 13, 14, 19, 16, 19, 16, 28, 19, 19, 16, 10, 13, 22, 42, 11, 23, 14, 22]}, {"t": "やるな！「四毒」", "avg": 19.6, "d": [23, 8, 14, 15, 79, 11, 11, 12, 17, 14, 17, 14, 25, 17, 17, 14, 9, 12, 19, 37, 10, 20, 12, 19]}, {"t": "医者の言うことを聞いてはいけない", "avg": 16.6, "d": [20, 6, 12, 13, 68, 10, 10, 10, 14, 12, 14, 12, 21, 14, 14, 12, 8, 10, 17, 31, 9, 17, 10, 16]}, {"t": "人の名前が出てこなくなったら鎌田實の逆さ", "avg": 15.8, "d": [19, 6, 12, 12, 65, 9, 9, 10, 14, 11, 14, 11, 20, 14, 14, 12, 7, 9, 16, 30, 8, 16, 10, 15]}];
+new Chart(document.getElementById('distLine').getContext('2d'),{type:'line',data:{labels:dateLabels,datasets:[{label:'全体',data:dailyVals,borderColor:G,backgroundColor:'rgba(0,255,65,0.05)',tension:0,pointRadius:2,borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:7},color:DG,maxRotation:45},grid:{color:'#001500'}},y:{ticks:{font:{size:8},color:DG},grid:{color:'#001500'},beginAtZero:true}}}});
+const bLabel={hot:'★HOT',rising:'↑RISE',stable:'→OK',slow:'↓SLOW'};
+const vb=document.getElementById('velBody');
+velData.forEach(v=>{const c=v.badge==='hot'?RD:v.badge==='rising'?AM:v.badge==='stable'?G:DG;vb.innerHTML+=`<tr><td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v.t}</td><td style="color:${c}">${v.avg}</td><td>${v.total}</td><td><span class="badge ${v.badge}">${bLabel[v.badge]}</span></td></tr>`;});
+const spEl=document.getElementById('sparklines');
+sparkData.forEach(item=>{const max=Math.max(...item.d)||1;const pts=item.d.map((v,i)=>`${i/(item.d.length-1)*100},${100-(v/max*85+5)}`).join(' ');const col=item.avg>20?RD:item.avg>10?AM:G;spEl.innerHTML+=`<div class="sparkline-row"><div class="sp-label">${item.t}</div><div class="sp-wrap"><svg width="100%" height="22" preserveAspectRatio="none" viewBox="0 0 100 100"><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="3"/></svg></div><div class="sp-val" style="color:${col}">${item.avg}/d</div></div>`;});
+</script></body></html>
