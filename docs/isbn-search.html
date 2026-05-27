@@ -33,45 +33,48 @@ button{background:var(--accent);color:#000;border:none;padding:14px 24px;font-si
 <h1>ISBN_IMAGE_SEARCH</h1>
 <div class="sub">97848772 + [4 digits] = product image</div>
 <div class="row">
-<div class="pre">97848772 &mdash;</div>
+<div class="pre">97848772 -</div>
 <input type="text" id="inp" maxlength="4" placeholder="3348" inputmode="numeric" />
 <button onclick="go()">Search</button>
 </div>
 <div class="hint">Enter digits 9-12 of ISBN (4 digits)</div>
 <div class="results" id="res"></div>
 <script>
-const CN="dhuvuhjcu";
-let db=[];
-fetch("isbn_list.json").then(r=>r.json()).then(d=>{db=d;}).catch(()=>{db=[];});
-const inp=document.getElementById("inp");
-const res=document.getElementById("res");
-inp.addEventListener("input",()=>{
-  inp.value=inp.value.replace(/D/g,"").slice(0,4);
+var CN="dhuvuhjcu";
+var db=[];
+fetch("isbn_list.json").then(function(r){return r.json();}).then(function(d){db=d;}).catch(function(){db=[];});
+var inp=document.getElementById("inp");
+var res=document.getElementById("res");
+inp.addEventListener("input",function(){
+  inp.value=inp.value.replace(/[^0-9]/g,"").slice(0,4);
   if(inp.value.length===4)go();
 });
-inp.addEventListener("keydown",e=>{if(e.key==="Enter")go();});
+inp.addEventListener("keydown",function(e){if(e.key==="Enter")go();});
 function go(){
-  const four=inp.value.trim();
+  var four=inp.value.trim();
   if(!four)return;
-  const hits=db.filter(i=>i.slice(8,12)===four);
-  if(hits.length===0){res.innerHTML='<div class="msg err">No image found: 97848772'+four+'</div>';return;}
+  var hits=db.filter(function(i){return i.slice(8,12)===four;});
+  if(hits.length===0){res.innerHTML="<div class=\"msg err\">No image found: 97848772"+four+"</div>";return;}
   if(hits.length===1){show(hits[0]);}else{grid(hits);}
 }
 function show(isbn){
-  const url="https://res.cloudinary.com/"+CN+"/image/upload/ph/"+isbn+".jpg";
-  res.innerHTML='<div class="msg load">Loading...</div>';
-  const img=new Image();
-  img.onload=()=>{res.innerHTML='<div class="card"><div class="ch"><span class="isbn">'+isbn+'</span><span class="badge">FOUND</span></div><div class="iw"><img src="'+url+'" /></div><div class="cf">'+url+'</div></div>';};
-  img.onerror=()=>{res.innerHTML='<div class="msg err">Error: '+isbn+'</div>';};
+  var url="https://res.cloudinary.com/"+CN+"/image/upload/ph/"+isbn+".jpg";
+  res.innerHTML="<div class=\"msg load\">Loading...</div>";
+  var img=new Image();
+  img.onload=function(){res.innerHTML="<div class=\"card\"><div class=\"ch\"><span class=\"isbn\">"+isbn+"</span><span class=\"badge\">FOUND</span></div><div class=\"iw\"><img src=\""+url+"\" /></div><div class=\"cf\">"+url+"</div></div>";};
+  img.onerror=function(){res.innerHTML="<div class=\"msg err\">Error: "+isbn+"</div>";};
   img.src=url;
 }
 function grid(isbns){
-  let h='<div style="font-size:11px;color:var(--muted);margin-bottom:16px;text-align:center">'+isbns.length+' results</div><div class="grid">';
-  isbns.forEach(isbn=>{
-    const url="https://res.cloudinary.com/"+CN+"/image/upload/ph/"+isbn+".jpg";
-    h+='<div class="card" style="cursor:pointer" onclick="show(''+isbn+'')"><div class="ch" style="padding:10px 14px"><span class="isbn" style="font-size:11px">'+isbn+'</span></div><div class="iw" style="padding:16px"><img src="'+url+'" style="max-height:180px" onerror="this.style.display='none'" /></div></div>';
-  });
-  h+='</div>';
+  var h="<div style=\"font-size:11px;color:var(--muted);margin-bottom:16px;text-align:center\">"+isbns.length+" results</div><div class=\"grid\">";
+  for(var x=0;x<isbns.length;x++){
+    var isbn=isbns[x];
+    var url="https://res.cloudinary.com/"+CN+"/image/upload/ph/"+isbn+".jpg";
+    h+="<div class=\"card\" style=\"cursor:pointer\" onclick=\"show('"+isbn+"')\" >";
+    h+="<div class=\"ch\" style=\"padding:10px 14px\"><span class=\"isbn\" style=\"font-size:11px\">"+isbn+"</span></div>";
+    h+="<div class=\"iw\" style=\"padding:16px\"><img src=\""+url+"\" style=\"max-height:180px\" onerror=\"this.style.display='none'\" /></div></div>";
+  }
+  h+="</div>";
   res.innerHTML=h;
 }
 </script>
