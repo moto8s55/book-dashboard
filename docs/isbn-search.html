@@ -265,16 +265,16 @@
 
 <div class="header">
   <h1>ISBN_IMAGE_SEARCH</h1>
-  <p>978487723 + [4桁] → 商品画像</p>
+  <p>978487723 + [4桁] ↁE啁E��画僁E/p>
 </div>
 
 <div class="search-box">
   <div class="input-row">
-    <div class="prefix">978487723<span>—</span></div>
+    <div class="prefix">97848772<span> E/span></div>
     <input type="text" id="isbnInput" maxlength="4" placeholder="3556" inputmode="numeric" />
     <button onclick="search()">検索</button>
   </div>
-  <div class="hint">ISBNの9〜12桁目（4桁）を入力</div>
+  <div class="hint">ISBNの9、E2桁目�E�E桁E��を入劁E/div>
 </div>
 
 <div class="results" id="results"></div>
@@ -299,7 +299,7 @@
   function search() {
     const four = input.value.trim().padStart(4, '0');
     if (four.length !== 4 || !/^\d{4}$/.test(four)) {
-      results.innerHTML = `<div class="state-msg state-error">⚠ 4桁の数字を入力してください</div>`;
+      results.innerHTML = `<div class="state-msg state-error">⚠ 4桁�E数字を入力してください</div>`;
       return;
     }
     const isbn13   = ISBN_PREFIX + four;
@@ -321,7 +321,7 @@
     img.onerror = () => {
       results.innerHTML = `
         <div class="state-msg state-error">
-          ❌ 画像が見つかりません<br>
+          ❁E画像が見つかりません<br>
           <span style="font-size:11px;color:var(--muted);margin-top:8px;display:block">${isbn13}</span>
         </div>`;
     };
