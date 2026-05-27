@@ -1,369 +1,79 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ISBN Image Search</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&display=swap');
-
-  :root {
-    --bg: #0a0a0a;
-    --surface: #111111;
-    --border: #222222;
-    --accent: #00ff88;
-    --accent2: #0088ff;
-    --text: #e8e8e8;
-    --muted: #555555;
-    --error: #ff4444;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Noto Sans JP', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 20px;
-  }
-
-  .header {
-    text-align: center;
-    margin-bottom: 48px;
-  }
-
-  .header h1 {
-    font-family: 'Space Mono', monospace;
-    font-size: clamp(18px, 4vw, 28px);
-    letter-spacing: 0.15em;
-    color: var(--accent);
-    margin-bottom: 8px;
-  }
-
-  .header p {
-    font-size: 13px;
-    color: var(--muted);
-    font-family: 'Space Mono', monospace;
-    letter-spacing: 0.05em;
-  }
-
-  .search-box {
-    width: 100%;
-    max-width: 480px;
-    margin-bottom: 40px;
-  }
-
-  .input-row {
-    display: flex;
-    gap: 0;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-
-  .input-row:focus-within {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent);
-  }
-
-  .prefix {
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    padding: 14px 16px;
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    color: var(--muted);
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-  }
-
-  .prefix span {
-    color: var(--accent2);
-  }
-
-  input[type="text"] {
-    flex: 1;
-    background: var(--surface);
-    border: none;
-    outline: none;
-    padding: 14px 16px;
-    font-family: 'Space Mono', monospace;
-    font-size: 18px;
-    color: var(--text);
-    letter-spacing: 0.2em;
-    width: 100px;
-  }
-
-  input[type="text"]::placeholder {
-    color: var(--muted);
-    letter-spacing: 0.1em;
-  }
-
-  button {
-    background: var(--accent);
-    color: #000;
-    border: none;
-    padding: 14px 24px;
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    letter-spacing: 0.05em;
-    transition: background 0.15s, transform 0.1s;
-  }
-
-  button:hover { background: #00cc70; }
-  button:active { transform: scale(0.97); }
-
-  .hint {
-    margin-top: 10px;
-    font-size: 11px;
-    color: var(--muted);
-    font-family: 'Space Mono', monospace;
-    text-align: center;
-  }
-
-  /* Results */
-  .results {
-    width: 100%;
-    max-width: 480px;
-  }
-
-  .result-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-    animation: fadeIn 0.3s ease;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .result-header {
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .result-isbn {
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-  }
-
-  .result-badge {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: var(--accent);
-    border: 1px solid var(--accent);
-    padding: 2px 8px;
-    border-radius: 2px;
-    letter-spacing: 0.05em;
-  }
-
-  .result-img-wrap {
-    padding: 24px;
-    display: flex;
-    justify-content: center;
-    background: #0d0d0d;
-  }
-
-  .result-img-wrap img {
-    max-width: 100%;
-    max-height: 360px;
-    object-fit: contain;
-    border-radius: 2px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-  }
-
-  .result-footer {
-    padding: 12px 18px;
-    border-top: 1px solid var(--border);
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    word-break: break-all;
-  }
-
-  /* States */
-  .state-msg {
-    text-align: center;
-    padding: 48px 24px;
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-  }
-
-  .state-loading { color: var(--accent2); }
-  .state-error   { color: var(--error); }
-  .state-empty   { color: var(--muted); }
-
-  .spinner {
-    display: inline-block;
-    width: 14px; height: 14px;
-    border: 2px solid var(--accent2);
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin-right: 8px;
-    vertical-align: middle;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* History */
-  .history {
-    width: 100%;
-    max-width: 480px;
-    margin-top: 32px;
-  }
-
-  .history-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-  }
-
-  .history-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .history-chip {
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    color: var(--text);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 4px 12px;
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
-  }
-
-  .history-chip:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
+:root{--bg:#0a0a0a;--surface:#111;--border:#222;--accent:#00ff88;--accent2:#0088ff;--text:#e8e8e8;--muted:#555;--error:#f44;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px;}
+h1{font-size:24px;letter-spacing:.15em;color:var(--accent);margin-bottom:8px;}
+.sub{font-size:13px;color:var(--muted);margin-bottom:40px;}
+.row{display:flex;border:1px solid var(--border);border-radius:4px;overflow:hidden;max-width:520px;width:100%;}
+.pre{background:var(--surface);border-right:1px solid var(--border);padding:14px 16px;font-size:13px;color:var(--muted);white-space:nowrap;display:flex;align-items:center;}
+input{flex:1;background:var(--surface);border:none;outline:none;padding:14px 16px;font-size:20px;color:var(--text);letter-spacing:.2em;min-width:0;}
+button{background:var(--accent);color:#000;border:none;padding:14px 24px;font-size:13px;font-weight:700;cursor:pointer;}
+.hint{margin-top:8px;font-size:11px;color:var(--muted);text-align:center;max-width:520px;width:100%;margin-bottom:24px;}
+.results{width:100%;max-width:520px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:16px;}
+.ch{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.isbn{font-size:13px;color:var(--accent);letter-spacing:.1em;}
+.badge{font-size:10px;color:var(--accent);border:1px solid var(--accent);padding:2px 8px;border-radius:2px;}
+.iw{padding:24px;display:flex;justify-content:center;background:#0d0d0d;}
+.iw img{max-width:100%;max-height:360px;object-fit:contain;}
+.cf{padding:12px 18px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);word-break:break-all;}
+.msg{text-align:center;padding:48px 24px;font-size:13px;}
+.err{color:var(--error);}
+.load{color:var(--accent2);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;}
 </style>
 </head>
 <body>
-
-<div class="header">
-  <h1>ISBN_IMAGE_SEARCH</h1>
-  <p>97848772 + [4譯‐ 竊・蝠・刀逕ｻ蜒・/p>
+<h1>ISBN_IMAGE_SEARCH</h1>
+<div class="sub">97848772 + [4 digits] = product image</div>
+<div class="row">
+<div class="pre">97848772 &mdash;</div>
+<input type="text" id="inp" maxlength="4" placeholder="3348" inputmode="numeric" />
+<button onclick="go()">Search</button>
 </div>
-
-<div class="search-box">
-  <div class="input-row">
-    <div class="prefix">97848772<span>窶・/span></div>
-    <input type="text" id="isbnInput" maxlength="4" placeholder="3556" inputmode="numeric" />
-    <button onclick="search()">讀懃ｴ｢</button>
-  </div>
-  <div class="hint">ISBN縺ｮ9縲・2譯∫岼・・譯・ｼ峨ｒ蜈･蜉・/div>
-</div>
-
-<div class="results" id="results"></div>
-<div class="history" id="historyArea" style="display:none">
-  <div class="history-label">螻･豁ｴ</div>
-  <div class="history-list" id="historyList"></div>
-</div>
-
+<div class="hint">Enter digits 9-12 of ISBN (4 digits)</div>
+<div class="results" id="res"></div>
 <script>
-  const CLOUD_NAME  = 'dhuvuhjcu';
-  const ISBN_PREFIX = '97848772';
-  const history_arr = [];
-
-  const input   = document.getElementById('isbnInput');
-  const results = document.getElementById('results');
-
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
-  input.addEventListener('input', () => {
-    input.value = input.value.replace(/\D/g, '').slice(0, 4);
+const CN="dhuvuhjcu";
+let db=[];
+fetch("isbn_list.json").then(r=>r.json()).then(d=>{db=d;}).catch(()=>{db=[];});
+const inp=document.getElementById("inp");
+const res=document.getElementById("res");
+inp.addEventListener("input",()=>{
+  inp.value=inp.value.replace(/D/g,"").slice(0,4);
+  if(inp.value.length===4)go();
+});
+inp.addEventListener("keydown",e=>{if(e.key==="Enter")go();});
+function go(){
+  const four=inp.value.trim();
+  if(!four)return;
+  const hits=db.filter(i=>i.slice(8,12)===four);
+  if(hits.length===0){res.innerHTML='<div class="msg err">No image found: 97848772'+four+'</div>';return;}
+  if(hits.length===1){show(hits[0]);}else{grid(hits);}
+}
+function show(isbn){
+  const url="https://res.cloudinary.com/"+CN+"/image/upload/ph/"+isbn+".jpg";
+  res.innerHTML='<div class="msg load">Loading...</div>';
+  const img=new Image();
+  img.onload=()=>{res.innerHTML='<div class="card"><div class="ch"><span class="isbn">'+isbn+'</span><span class="badge">FOUND</span></div><div class="iw"><img src="'+url+'" /></div><div class="cf">'+url+'</div></div>';};
+  img.onerror=()=>{res.innerHTML='<div class="msg err">Error: '+isbn+'</div>';};
+  img.src=url;
+}
+function grid(isbns){
+  let h='<div style="font-size:11px;color:var(--muted);margin-bottom:16px;text-align:center">'+isbns.length+' results</div><div class="grid">';
+  isbns.forEach(isbn=>{
+    const url="https://res.cloudinary.com/"+CN+"/image/upload/ph/"+isbn+".jpg";
+    h+='<div class="card" style="cursor:pointer" onclick="show(''+isbn+'')"><div class="ch" style="padding:10px 14px"><span class="isbn" style="font-size:11px">'+isbn+'</span></div><div class="iw" style="padding:16px"><img src="'+url+'" style="max-height:180px" onerror="this.style.display='none'" /></div></div>';
   });
-
-  function search() {
-    const four = input.value.trim().padStart(4, '0');
-    if (four.length !== 4 || !/^\d{4}$/.test(four)) {
-      results.innerHTML = `<div class="state-msg state-error">笞 4譯√・謨ｰ蟄励ｒ蜈･蜉帙＠縺ｦ縺上□縺輔＞</div>`;
-      return;
-    }
-    const isbn13   = ISBN_PREFIX + four;
-    const imageUrl = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/ph/${isbn13}.jpg`;
-    showLoading(isbn13);
-    loadImage(imageUrl, isbn13, four);
-  }
-
-  function showLoading(isbn13) {
-    results.innerHTML = `
-      <div class="state-msg state-loading">
-        <span class="spinner"></span>Loading ${isbn13}...
-      </div>`;
-  }
-
-  function loadImage(url, isbn13, four) {
-    const img = new Image();
-    img.onload = () => showResult(url, isbn13, four);
-    img.onerror = () => {
-      results.innerHTML = `
-        <div class="state-msg state-error">
-          笶・逕ｻ蜒上′隕九▽縺九ｊ縺ｾ縺帙ｓ<br>
-          <span style="font-size:11px;color:var(--muted);margin-top:8px;display:block">${isbn13}</span>
-        </div>`;
-    };
-    img.src = url;
-  }
-
-  function showResult(url, isbn13, four) {
-    results.innerHTML = `
-      <div class="result-card">
-        <div class="result-header">
-          <span class="result-isbn">${isbn13}</span>
-          <span class="result-badge">FOUND</span>
-        </div>
-        <div class="result-img-wrap">
-          <img src="${url}" alt="ISBN ${isbn13}" />
-        </div>
-        <div class="result-footer">${url}</div>
-      </div>`;
-
-    // 螻･豁ｴ霑ｽ蜉
-    if (!history_arr.includes(four)) {
-      history_arr.unshift(four);
-      if (history_arr.length > 10) history_arr.pop();
-      renderHistory();
-    }
-  }
-
-  function renderHistory() {
-    const area = document.getElementById('historyArea');
-    const list = document.getElementById('historyList');
-    if (history_arr.length === 0) { area.style.display = 'none'; return; }
-    area.style.display = 'block';
-    list.innerHTML = history_arr.map(f =>
-      `<span class="history-chip" onclick="selectHistory('${f}')">${ISBN_PREFIX}<b>${f}</b></span>`
-    ).join('');
-  }
-
-  function selectHistory(four) {
-    input.value = four;
-    search();
-  }
+  h+='</div>';
+  res.innerHTML=h;
+}
 </script>
 </body>
 </html>
-
