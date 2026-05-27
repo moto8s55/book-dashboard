@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -265,27 +265,27 @@
 
 <div class="header">
   <h1>ISBN_IMAGE_SEARCH</h1>
-  <p>978487723 + [4桁] → 商品画像</p>
+  <p>97848772 + [4譯‐ 竊・蝠・刀逕ｻ蜒・/p>
 </div>
 
 <div class="search-box">
   <div class="input-row">
-    <div class="prefix">978487723<span>—</span></div>
+    <div class="prefix">97848772<span>窶・/span></div>
     <input type="text" id="isbnInput" maxlength="4" placeholder="3556" inputmode="numeric" />
-    <button onclick="search()">検索</button>
+    <button onclick="search()">讀懃ｴ｢</button>
   </div>
-  <div class="hint">ISBNの9〜12桁目（4桁）を入力</div>
+  <div class="hint">ISBN縺ｮ9縲・2譯∫岼・・譯・ｼ峨ｒ蜈･蜉・/div>
 </div>
 
 <div class="results" id="results"></div>
 <div class="history" id="historyArea" style="display:none">
-  <div class="history-label">履歴</div>
+  <div class="history-label">螻･豁ｴ</div>
   <div class="history-list" id="historyList"></div>
 </div>
 
 <script>
   const CLOUD_NAME  = 'dhuvuhjcu';
-  const ISBN_PREFIX = '978487723';
+  const ISBN_PREFIX = '97848772';
   const history_arr = [];
 
   const input   = document.getElementById('isbnInput');
@@ -299,7 +299,7 @@
   function search() {
     const four = input.value.trim().padStart(4, '0');
     if (four.length !== 4 || !/^\d{4}$/.test(four)) {
-      results.innerHTML = `<div class="state-msg state-error">⚠ 4桁の数字を入力してください</div>`;
+      results.innerHTML = `<div class="state-msg state-error">笞 4譯√・謨ｰ蟄励ｒ蜈･蜉帙＠縺ｦ縺上□縺輔＞</div>`;
       return;
     }
     const isbn13   = ISBN_PREFIX + four;
@@ -321,7 +321,7 @@
     img.onerror = () => {
       results.innerHTML = `
         <div class="state-msg state-error">
-          ❌ 画像が見つかりません<br>
+          笶・逕ｻ蜒上′隕九▽縺九ｊ縺ｾ縺帙ｓ<br>
           <span style="font-size:11px;color:var(--muted);margin-top:8px;display:block">${isbn13}</span>
         </div>`;
     };
@@ -341,7 +341,7 @@
         <div class="result-footer">${url}</div>
       </div>`;
 
-    // 履歴追加
+    // 螻･豁ｴ霑ｽ蜉
     if (!history_arr.includes(four)) {
       history_arr.unshift(four);
       if (history_arr.length > 10) history_arr.pop();
@@ -366,3 +366,4 @@
 </script>
 </body>
 </html>
+
