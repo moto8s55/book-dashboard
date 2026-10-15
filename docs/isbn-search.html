@@ -58,7 +58,7 @@ function go(){
   if(hits.length===1){show(hits[0]);}else{grid(hits);}
 }
 function show(isbn){
-  var url="https://res.cloudinary.com/"+CN+"/image/upload/ph/"+isbn+".jpg";
+  var url="https://raw.githubusercontent.com/moto8s55/book-dashboard/main/ph/"+isbn+".jpg";
   res.innerHTML="<div class=\"msg load\">Loading...</div>";
   var img=new Image();
   img.onload=function(){res.innerHTML="<div class=\"card\"><div class=\"ch\"><span class=\"isbn\">"+isbn+"</span><span class=\"badge\">FOUND</span></div><div class=\"iw\"><img src=\""+url+"\" /></div><div class=\"cf\">"+url+"</div></div>";};
@@ -69,7 +69,7 @@ function grid(isbns){
   var h="<div style=\"font-size:11px;color:var(--muted);margin-bottom:16px;text-align:center\">"+isbns.length+" results</div><div class=\"grid\">";
   for(var x=0;x<isbns.length;x++){
     var isbn=isbns[x];
-    var url="https://res.cloudinary.com/"+CN+"/image/upload/ph/"+isbn+".jpg";
+    var url="https://raw.githubusercontent.com/moto8s55/book-dashboard/main/ph/"+isbn+".jpg";
     h+="<div class=\"card\" style=\"cursor:pointer\" onclick=\"show('"+isbn+"')\" >";
     h+="<div class=\"ch\" style=\"padding:10px 14px\"><span class=\"isbn\" style=\"font-size:11px\">"+isbn+"</span></div>";
     h+="<div class=\"iw\" style=\"padding:16px\"><img src=\""+url+"\" style=\"max-height:180px\" onerror=\"this.style.display='none'\" /></div></div>";
